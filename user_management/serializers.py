@@ -15,14 +15,10 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
         model = User
 
+class UserConfirmCodeSerializer(serializers.ModelSerializer):
+    pass
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    username_field = User.USERNAME_FIELD
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['password'].required = False
-
-    def validate(self, attrs):
-        attrs['password'] = self.context['request'].data.get('confirmation_code')
-        return super().validate(attrs)
+class MyTokenObtainPairSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    confirmation_code = serializers.CharField()

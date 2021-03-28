@@ -6,34 +6,33 @@ from django.conf import settings
 
 
 class User(AbstractUser):
-    first_name = models.TextField(max_length=500, blank=True)
-    last_name = models.TextField(max_length=500, blank=True)
-    username = models.TextField(max_length=500, blank=True)
-    bio = models.TextField(max_length=500, blank=True)
-    email = models.EmailField(max_length=254, unique=True)
-    role = models.DateField(null=True, blank=True)
-    confirmation_code = models.CharField(
-        max_length=36,
+    ROLE_USER = 'user'
+    ROLE_MODERATOR = 'moderator'
+    ROLE_ADMIN = 'admin'
+    USERS_ROLE = (
+        (ROLE_USER, 'Пользователь'),
+        (ROLE_MODERATOR, 'Модератор'),
+        (ROLE_ADMIN, 'Админ'),
+    )
+    email = models.EmailField('e-mail', unique=True)
+    bio = models.TextField(
+        max_length=500,
         blank=True,
         null=True,
-        unique=True,
     )
-
-    USERNAME_FIELD = 'email'
+    role = models.CharField(
+        verbose_name='Роль пользователя',
+        max_length=10,
+        choices=USERS_ROLE,
+        default=ROLE_USER,
+    )
     REQUIRED_FIELDS = ['username']
-    USER_ROLES = [
-        ('admin', 'Администратор'),
-        ('moderator', 'Модератор'),
-        ('user', 'Пользователь')
-    ]
+    USERNAME_FIELD = 'email'
+    def __str__(self):
+        return self.email
 
-    @property
-    def is_admin(self):
-        return self.role == 'admin' or self.is_staff
 
-    @property
-    def is_moderator(self):
-        return self.role == 'moderator'
-
-    class Meta:
-        ordering = ('id', )
+class ConfirmationCode(models.Model):
+    confirmation_code = models.CharField(max_length=32)
+    email = models.EmailField(max_length=254, unique=True)
+    code_date = models.DateTimeField(auto_now_add=True)
