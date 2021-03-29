@@ -5,21 +5,20 @@ from .models import Comment, Review
 
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
-        many=False,
         read_only=True,
         slug_field='username'
     )
     title = serializers.SlugRelatedField(
-        many=False,
         read_only=True,
         slug_field='id'
     )
 
-    def validate(self, data):
-        pass
-
     def create(self, data):
-        pass
+        author = self.context['request'].user
+        title = self.context['view'].kwargs.get('title_id')
+        if Review.objects.filter(title=title, author=author).exists():
+            raise serializers.ValidationError('Можно написть только один отзыв')
+        return data
 
     class Meta:
         model = Review
@@ -28,11 +27,14 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
-        slug_field='username', read_only=True
+        slug_field='username',
+        read_only=True
     )
 
-    def validate(self, data):
-        pass
+    review = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='text'
+    )
 
     class Meta:
         model = Comment

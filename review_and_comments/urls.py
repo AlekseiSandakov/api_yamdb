@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ReviewSerializer, CommentViewSet
+from .views import ReviewViewSet, CommentViewSet
 
 
 router_v1 = DefaultRouter()
@@ -18,6 +18,4 @@ router_v1.register(
 
 urlpatterns = [
     path('', include(router_v1.urls)),
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
