@@ -16,15 +16,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'review_and_comments'
     'rest_framework',
     'rest_framework.validators',
     'rest_framework_simplejwt',
+    'rest_framework.authtoken',
     'django_filters',
     'user_management',
     'review_and_comments',
     'content',
-    
 ]
 
 MIDDLEWARE = [
@@ -108,3 +107,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
+
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
