@@ -1,24 +1,27 @@
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(
-        many=False,
-        read_only=True,
-        slug_field='username'
-    )
-
     class Meta:
-        fields = '__all__'
         model = User
+        fields = (
+            'username',
+            'role',
+            'email',
+            'first_name',
+            'last_name',
+            'bio',
+        )
 
-class UserConfirmCodeSerializer(serializers.ModelSerializer):
-    pass
+
+class ConfirmationCodeSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    username = serializers.CharField(required=True)
+    confirmation_code = serializers.CharField(required=True)
 
 
-class MyTokenObtainPairSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    confirmation_code = serializers.CharField()
+class EmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    username = serializers.CharField(required=True)

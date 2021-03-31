@@ -1,8 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
-
-from django.conf import settings
 
 
 class User(AbstractUser):
@@ -14,7 +11,7 @@ class User(AbstractUser):
         (ROLE_MODERATOR, 'Модератор'),
         (ROLE_ADMIN, 'Админ'),
     )
-    email = models.EmailField('e-mail', unique=True)
+    email = models.EmailField(unique=True, blank=False)
     bio = models.TextField(
         max_length=500,
         blank=True,
@@ -26,13 +23,32 @@ class User(AbstractUser):
         choices=USERS_ROLE,
         default=ROLE_USER,
     )
-    REQUIRED_FIELDS = ['username']
+    username = models.CharField(
+        null=True,
+        blank=True,
+        max_length=150,
+        unique=True,
+    )
+    confirmation_code = models.CharField(
+        null=True,
+        blank=True,
+        max_length=255
+    )
+
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['confirmation_code', 'username']
+
+    @property
+    def is_admin(self):
+        return (self.role == self.ROLE_ADMIN
+                or self.is_staff or self.is_superuser)
+
+    @property
+    def is_moderator(self):
+        return self.role == self.ROLE_MODERATOR
+
     def __str__(self):
         return self.email
 
-
-class ConfirmationCode(models.Model):
-    confirmation_code = models.CharField(max_length=32)
-    email = models.EmailField(max_length=254, unique=True)
-    code_date = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['-id']
