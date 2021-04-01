@@ -1,22 +1,18 @@
 from django.contrib.auth.tokens import default_token_generator
-from rest_framework import viewsets, status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.core.mail import send_mail
+from rest_framework import status, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework.decorators import api_view, permission_classes, action
-from django.core.mail import send_mail
 
 from api_yamdb import settings
 
-
-from .permissions import IsAdmin
 from .models import User
-from .serializers import (
-    EmailSerializer,
-    UserSerializer,
-    ConfirmationCodeSerializer
-)
+from .permissions import IsAdmin
+from .serializers import (ConfirmationCodeSerializer, EmailSerializer,
+                          UserSerializer)
 
 
 @api_view(['POST'])
