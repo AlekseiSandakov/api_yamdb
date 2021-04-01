@@ -15,7 +15,7 @@ class Set(mixins.ListModelMixin,
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.all()
+    queryset = Title.objects.annotate(rating=Avg('reviews__score')).order_by('name')
     serializer_class = TitleSerializer
     permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend]

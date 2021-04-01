@@ -8,14 +8,14 @@ router_v1 = DefaultRouter()
 router_v1.register(
     r'titles/(?P<title_id>\d+)/reviews',
     ReviewViewSet,
-    basename='reviews_api'
+    basename='reviews'
 )
 router_v1.register(
-    r'titles/(?P<post_id>\d+)/reviews/(?P<review_id>\d+/comments)',
+    r'titles/(?P<post_id>\d+)/reviews/(?P<review_id>\d+)/comments',
     CommentViewSet,
-    basename='comments_api'
+    basename='comments'
 )
 
 urlpatterns = [
-    path('', include(router_v1.urls)),
+    path('v1/', include(router_v1.urls)),
 ]
