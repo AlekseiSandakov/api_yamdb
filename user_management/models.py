@@ -51,4 +51,4 @@ class User(AbstractUser):
         return self.email
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['id']
