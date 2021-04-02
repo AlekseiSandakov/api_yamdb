@@ -26,6 +26,9 @@ class Review(models.Model):
         'Дата публикации отзыва', auto_now_add=True
     )
 
+    class Meta:
+        ordering = ('-pub_date',)
+
 
 class Comment(models.Model):
     review = models.ForeignKey(
@@ -39,5 +42,8 @@ class Comment(models.Model):
     )
     text = models.TextField(verbose_name='Текст комментария')
     pub_date = models.DateTimeField(
-        'Дата публикации комментария', auto_now_add=True
+        'Дата публикации комментария', auto_now_add=True, db_index=True
     )
+
+    class Meta:
+        ordering = ('-pub_date',)

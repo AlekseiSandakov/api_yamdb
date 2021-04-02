@@ -30,6 +30,8 @@ class TitleSerializer(serializers.ModelSerializer):
         queryset=Category.objects.all()
     )
 
+    rating = serializers.FloatField(read_only=True)
+
     class Meta:
         fields = '__all__'
         model = Title
