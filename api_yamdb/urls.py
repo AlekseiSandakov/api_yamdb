@@ -11,5 +11,5 @@ urlpatterns = [
         TemplateView.as_view(template_name='redoc.html'),
         name='redoc'
     ),
-    path('review_and_comments/', include('review_and_comments.urls'))
+    path('api/', include('review_and_comments.urls'))
 ]
