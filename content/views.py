@@ -8,10 +8,10 @@ from .permissions import IsAdminOrReadOnly
 from .serializers import CategorySerializer, GenreSerializer, TitleSerializer
 
 
-class Set(mixins.ListModelMixin,
-          mixins.DestroyModelMixin,
-          mixins.CreateModelMixin,
-          viewsets.GenericViewSet):
+class GenreCategorySet(mixins.ListModelMixin,
+                       mixins.DestroyModelMixin,
+                       mixins.CreateModelMixin,
+                       viewsets.GenericViewSet):
     pass
 
 
@@ -25,7 +25,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     filterset_fields = ['genre', ]
 
 
-class GenreViewSet(Set):
+class GenreViewSet(GenreCategorySet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = [IsAdminOrReadOnly]
@@ -34,7 +34,7 @@ class GenreViewSet(Set):
     lookup_field = 'slug'
 
 
-class CategoryViewSet(Set):
+class CategoryViewSet(GenreCategorySet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAdminOrReadOnly]

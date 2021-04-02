@@ -1,6 +1,8 @@
-from django.db import models
-from django.core.validators import MaxValueValidator
 from datetime import datetime
+
+from django.core.validators import MaxValueValidator
+from django.db import models
+
 
 class Category(models.Model):
     name = models.CharField(
@@ -10,7 +12,7 @@ class Category(models.Model):
     slug = models.SlugField(max_length=40, unique=True)
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('id', 'name')
 
     def __str__(self):
         return self.name
@@ -24,7 +26,7 @@ class Genre(models.Model):
     slug = models.SlugField(max_length=40, unique=True)
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('id', 'name')
 
     def __str__(self):
         return self.name
@@ -32,7 +34,10 @@ class Genre(models.Model):
 
 class Title(models.Model):
     name = models.CharField(max_length=200, verbose_name="Название")
-    year = models.SmallIntegerField(verbose_name="Год выхода", validators=[MaxValueValidator(datetime.now().year)])
+    year = models.SmallIntegerField(
+        verbose_name="Год выхода",
+        validators=[MaxValueValidator(datetime.now().year)]
+    )
     description = models.TextField(verbose_name="Описание")
     category = models.ForeignKey(
         Category,
@@ -41,10 +46,15 @@ class Title(models.Model):
         null=True,
         verbose_name="Категория"
     )
-    genre = models.ManyToManyField(Genre, blank=True, related_name='titles', verbose_name="Жанр")
+    genre = models.ManyToManyField(
+        Genre,
+        blank=True,
+        related_name='titles',
+        verbose_name="Жанр"
+    )
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('id', 'year')
 
     def __str__(self):
         return self.name
