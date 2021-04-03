@@ -11,25 +11,28 @@ class User(AbstractUser):
         (ROLE_MODERATOR, 'Модератор'),
         (ROLE_ADMIN, 'Админ'),
     )
-    email = models.EmailField(unique=True, blank=False)
-    bio = models.TextField(
+    email = models.EmailField(verbose_name='Адрес электронной почты', unique=True, blank=False)
+    bio = models.CharField(
+        verbose_name='О себе',
         max_length=500,
         blank=True,
         null=True,
     )
     role = models.CharField(
         verbose_name='Роль пользователя',
-        max_length=10,
+        max_length=21,
         choices=USERS_ROLE,
         default=ROLE_USER,
     )
     username = models.CharField(
+        verbose_name='Username',
         null=True,
         blank=True,
         max_length=150,
         unique=True,
     )
     confirmation_code = models.CharField(
+        verbose_name='Код подтверждения',
         null=True,
         blank=True,
         max_length=255

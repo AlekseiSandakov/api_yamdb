@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.generics import get_object_or_404
+
 from .models import Comment, Review
 
 
@@ -16,9 +16,9 @@ class ReviewSerializer(serializers.ModelSerializer):
     def validate(self, data):
         author = self.context['request'].user
         title = self.context['view'].kwargs.get('title_id')
-        if (self.context.get('request').method == 'POST' 
-        and Review.objects.filter(title=title, author=author).exists()):
-            raise serializers.ValidationError('Можно написть только один отзыв')
+        if (self.context.get('request').method == 'POST'
+           and Review.objects.filter(title=title, author=author).exists()):
+            raise serializers.ValidationError(f'Можно написть только один отзыв')
         return data
 
     class Meta:
