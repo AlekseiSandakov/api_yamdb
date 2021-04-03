@@ -23,7 +23,7 @@ class Review(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
     pub_date = models.DateTimeField(
-        'Дата публикации отзыва', auto_now_add=True
+        'Дата публикации отзыва', auto_now_add=True, db_index=True
     )
 
     class Meta:
