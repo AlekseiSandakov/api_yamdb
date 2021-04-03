@@ -17,13 +17,13 @@ class Review(models.Model):
         verbose_name='Автор отзыва',
         related_name='reviews',
     )
-    text = models.TextField(verbose_name='Текст отзыва') 
+    text = models.TextField(verbose_name='Текст отзыва')
     score = models.IntegerField(
         'Оценка',
         validators=[MinValueValidator(1), MaxValueValidator(10)]
     )
     pub_date = models.DateTimeField(
-        'Дата публикации отзыва', auto_now_add=True
+        'Дата публикации отзыва', auto_now_add=True, db_index=True
     )
 
     class Meta:
