@@ -11,7 +11,8 @@ class User(AbstractUser):
         (ROLE_MODERATOR, 'Модератор'),
         (ROLE_ADMIN, 'Админ'),
     )
-    email = models.EmailField(verbose_name='Адрес электронной почты', unique=True, blank=False)
+    email = models.EmailField(verbose_name='Адрес электронной почты',
+                              unique=True, blank=False)
     bio = models.CharField(
         verbose_name='О себе',
         max_length=500,

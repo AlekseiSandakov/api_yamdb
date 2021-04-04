@@ -70,7 +70,7 @@ class UserViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated],
     )
     def me(self, request):
-        if request.method == 'GET': 
+        if request.method == 'GET':
             return Response(self.get_serializer(request.user).data)
         serializer = self.get_serializer(
             request.user,
