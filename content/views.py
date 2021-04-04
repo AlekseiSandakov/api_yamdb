@@ -1,11 +1,6 @@
 from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
-<<<<<<< HEAD
-from rest_framework.permissions import AllowAny
-from django.db.models import Avg
-=======
->>>>>>> 08549b4e8d21c23ff4223bbb065eaa23cac4e507
 
 from .filters import TitleFilter
 from .models import Category, Genre, Title
