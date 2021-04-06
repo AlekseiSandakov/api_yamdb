@@ -5,7 +5,7 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from api_yamdb import settings
 
@@ -20,12 +20,10 @@ from .serializers import (ConfirmationCodeSerializer, EmailSerializer,
 def confirmation_code_sender(request):
     serializer = EmailSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-
     email = serializer.data['email']
     username = serializer.data['username']
     user = User.objects.get_or_create(email=email, username=username)[0]
     confirmation_code = default_token_generator.make_token(user)
-
     send_mail(
         subject='Ваш персональный код',
         from_email=settings.DEFAULT_FROM_EMAIL,
@@ -44,18 +42,18 @@ def confirmation_code_sender(request):
 def get_token(request):
     serializer = ConfirmationCodeSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-
-    email = serializer.data['email']
-    username = serializer.data['username']
-    confirmation_code = serializer.data['confirmation_code']
-    user = get_object_or_404(User, email=email, username=username)
-    if not default_token_generator.check_token(user, confirmation_code):
-        return Response(
-            {'confirmation_code': 'Неверный код'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    token = AccessToken.for_user(user)
-    return Response({'token': f'{token}'}, status=status.HTTP_200_OK)
+    confirmation_code = request.POST.get('confirmation_code')
+    email = request.POST.get('email')
+    if confirmation_code is None:
+        return Response("Введите confirmation_code")
+    if email is None:
+        return Response("Введите email")
+    token_check = default_token_generator.check_token(email, confirmation_code)
+    if token_check is True:
+        user = get_object_or_404(User, email=email)
+        refresh = RefreshToken.for_user(user)
+        return Response(f'Ваш токен:{refresh.access_token}')
+    return Response('Неправильный confirmation_code')
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -68,15 +66,17 @@ class UserViewSet(viewsets.ModelViewSet):
         detail=False,
         methods=['get', 'patch'],
         permission_classes=[IsAuthenticated],
+        url_path='me',
     )
     def me(self, request):
         if request.method == 'GET':
-            return Response(self.get_serializer(request.user).data)
-        serializer = self.get_serializer(
+            serializer = UserSerializer(request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = UserSerializer(
             request.user,
             data=request.data,
-            partial=True
+            partial=True,
         )
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
