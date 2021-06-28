@@ -28,14 +28,14 @@ class User(AbstractUser):
     username = models.CharField(
         verbose_name='Username',
         null=True,
-        blank=True,
+        blank=False,
         max_length=150,
         unique=True,
     )
     confirmation_code = models.CharField(
         verbose_name='Код подтверждения',
         null=True,
-        blank=True,
+        blank=False,
         max_length=255
     )
 
